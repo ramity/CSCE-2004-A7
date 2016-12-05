@@ -402,7 +402,7 @@ void getCourse(int n, Course courseClass)
   cout << "Enter the semester (e.g. Spring 2016) for class number " << n << endl;
   getline(cin,tempTime);
 
-  while(time == "")
+  while(tempTime == "")
   {
     cout << "Invalid input. Please try again." << endl;
     getline(cin,tempTime);
@@ -621,7 +621,7 @@ int main ()
 
     if(menuSelector == 'A')
     {
-      cout << "Congratulations, your GPA was " << gpa(courseClasses) << endl;
+      cout << "Congratulations, your GPA was " << gpa(courses, courseClasses) << endl;
     }
     else if(menuSelector == 'B')
     {
