@@ -158,7 +158,7 @@ bool reading(const char filename[], int& n, int capacity, Course courseClasses[]
   return 1;
 }
 
-bool writing(const char filename[], const Course courseClasses[], int n)
+bool writing(const char filename[], Course courseClasses[], int n)
 {
   //nuke the file
   if(remove(filename) != 0)
@@ -209,7 +209,7 @@ bool writing(const char filename[], const Course courseClasses[], int n)
   return 1;
 }
 
-double gpa(int n, const Course courseClasses[])
+double gpa(int n, Course courseClasses[])
 {
   char tempGrade;
   int tempHours;
@@ -261,7 +261,7 @@ double gpa(int n, const Course courseClasses[])
     cout << "An error occured" << endl;
 }
 
-double semesterGpa(int n, const Course courseClasses[], string semester)
+double semesterGpa(int n, Course courseClasses[], string semester)
 {
   double tempGradePointsSum = 0;
   double tempCreditHoursSum = 0;
