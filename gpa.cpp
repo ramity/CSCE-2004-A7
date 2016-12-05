@@ -24,7 +24,7 @@ class Course
     void setTime(string time);
     void setNumber(string number);
     void setGrade(char grade);
-    void getHours(int hour);
+    void setHours(int hour);
 
     void print() const;
 
