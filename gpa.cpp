@@ -475,6 +475,12 @@ void getCourse(int n, Course& courseClass)
   courseClass.setNumber(tempNumber);
   courseClass.setGrade(tempGrade);
   courseClass.setHours(tempHours);
+
+  cout << tempName << endl;
+
+  courseClass.getName(tempName);
+
+  cout << tempName << endl;
 }
 
 char menu()
