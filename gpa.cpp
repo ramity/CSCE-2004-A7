@@ -671,7 +671,7 @@ int main ()
       {
         courses++;
 
-        getCourse(courses, courseClasses[courses - 1]);
+        getCourse(courses, courseClasses[courses]);
       }
       else
       {
