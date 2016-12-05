@@ -381,7 +381,7 @@ void print(int n, Course courseClasses[])
   cout << endl;
 }
 
-void getCourse(int n, Course courseClass)
+void getCourse(int n, Course& courseClass)
 {
   string tempName;
   string tempTime;
@@ -671,11 +671,11 @@ int main ()
       {
         courses++;
 
-        getCourse(courses, courseClasses[courses]);
+        getCourse(courses, courseClasses[courses - 1]);
       }
       else
       {
-        cout << "Unable to add more than 10 classes" << endl;
+        cout << "Unable to add more than " << COURSE_MAX << " classes" << endl;
       }
     }
     else if(menuSelector == 'F')
