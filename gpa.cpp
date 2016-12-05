@@ -14,8 +14,17 @@ class Course
   public:
     Course();
 
-    void get(string& name, string& time, string& number, char& g, int& h) const;
-    void set(string name, string time, string number, char g, int h);
+    void getName(string& name);
+    void getTime(string& time);
+    void getNumber(string& number);
+    void getGrade(char& grade);
+    void getHours(int& hour);
+
+    void setName(string name);
+    void setTime(string time);
+    void setNumber(string number);
+    void setGrade(char grade);
+    void getHours(int hour);
 
     void print() const;
 
@@ -37,22 +46,48 @@ Course::Course()
   hours = 4;
 }
 
-void Course::get(string& name, string& time, string& number, char& g, int& h) const
+//GET METHODS
+void Course::getName(string& name)
 {
   name = this->courseName;
+}
+void Course::getTime(string& time)
+{
   time = this->courseTime;
+}
+void Course::getNumber(string& number)
+{
   number = this->courseNumber;
-  g = this->grade;
-  h = this->hours;
+}
+void Course::getGrade(char& grade)
+{
+  grade = this->grade;
+}
+void Course::getHours(int& hour)
+{
+  hour = this->hours;
 }
 
-void Course::set(string name, string time, string number, char g, int h)
+//SET METHODS
+void Course::setName(string name)
 {
   this->courseName = name;
+}
+void Course::setTime(string time)
+{
   this->courseTime = time;
+}
+void Course::setNumber(string number)
+{
   this->courseNumber = number;
-  this->grade = g;
-  this->hours = h;
+}
+void Course::setGrade(char grade)
+{
+  this->grade = grade;
+}
+void Course::setHours(int hours)
+{
+  this->hours = hours;
 }
 
 void Course::print() const
@@ -68,7 +103,7 @@ void Course::print() const
   cout << endl;
 }
 
-bool reading(const char filename[], string name[], string time[], string number[], char grade[], int hours[], int& n, int capacity, Course courseClasses[])
+bool reading(const char filename[], int& n, int capacity, Course courseClasses[])
 {
   fstream file;
   file.open(filename);
@@ -88,18 +123,28 @@ bool reading(const char filename[], string name[], string time[], string number[
 
     if(n < capacity)
     {
+      string tempName;
+      string tempTime;
+      string tempNumber;
+      char tempGrade;
+      int tempHours;
+
       for(int z = 0;z < n;z++)
       {
         cout << "Reading class " << z + 1 << endl;
-        getline(file,name[z]);
-        getline(file,time[z]);
-        getline(file,number[z]);
-        file >> grade[z];
-        file >> hours[z];
+        getline(file,tempName);
+        getline(file,tempTime);
+        getline(file,tempNumber);
+        file >> tempGrade;
+        file >> tempHours;
         file.ignore();
 
         //class
-        courseClasses[z].set(name[z], time[z], number[z], grade[z], hours[z]);
+        courseClasses[z].setName(tempName);
+        courseClasses[z].setTime(tempTime);
+        courseClasses[z].setNumber(tempNumber);
+        courseClasses[z].setGrade(tempGrade);
+        courseClasses[z].setHours(tempHours);
       }
     }
     else
@@ -113,7 +158,7 @@ bool reading(const char filename[], string name[], string time[], string number[
   return 1;
 }
 
-bool writing(const char filename[], const string name[], const string time[], const string number[], const char grade[], const int hours[], int n)
+bool writing(const char filename[], const Course courseClasses[], int n)
 {
   //nuke the file
   if(remove(filename) != 0)
@@ -136,14 +181,26 @@ bool writing(const char filename[], const string name[], const string time[], co
   {
     file << n << endl;
 
+    string tempName;
+    string tempTime;
+    string tempNumber;
+    char tempGrade;
+    int tempHours;
+
     for(int z = 0;z < n;z++)
     {
+      courseClasses[z].getName(tempName);
+      courseClasses[z].getTime(tempTime);
+      courseClasses[z].getNumber(tempNumber);
+      courseClasses[z].getGrade(tempGrade);
+      courseClasses[z].getHours(tempHours);
+
       cout << "Writing class " << z + 1 << endl;
-      file << name[z] << endl;
-      file << time[z] << endl;
-      file << number[z] << endl;
-      file << grade[z] << endl;
-      file << hours[z] << endl;
+      file << tempName << endl;
+      file << tempTime << endl;
+      file << tempNumber << endl;
+      file << tempGrade << endl;
+      file << tempHours << endl;
     }
   }
 
@@ -152,31 +209,37 @@ bool writing(const char filename[], const string name[], const string time[], co
   return 1;
 }
 
-double gpa(int n, const char grades[], const int hours[])
+double gpa(int n, const Course courseClasses[])
 {
+  char tempGrade;
+  int tempHours;
+
   double tempGradePointsSum = 0;
   double tempCreditHoursSum = 0;
   double tempGradePointRep = -1;
 
-  for(int courseNumber = 0; courseNumber < n; courseNumber++)
+  for(int z = 0; z < n; z++)
   {
-    if(grades[courseNumber] == 'A')
+    courseClasses[z].getGrade(tempGrade);
+    courseClasses[z].getHours(tempHours);
+
+    if(tempGrade == 'A')
     {
       tempGradePointRep = 4;
     }
-    else if(grades[courseNumber] == 'B')
+    else if(tempGrade == 'B')
     {
       tempGradePointRep = 3;
     }
-    else if(grades[courseNumber] == 'C')
+    else if(tempGrade == 'C')
     {
       tempGradePointRep = 2;
     }
-    else if(grades[courseNumber] == 'D')
+    else if(tempGrade == 'D')
     {
       tempGradePointRep = 1;
     }
-    else if(grades[courseNumber] == 'F')
+    else if(tempGrade == 'F')
     {
       tempGradePointRep = 0;
     }
@@ -187,8 +250,8 @@ double gpa(int n, const char grades[], const int hours[])
 
     if(tempGradePointRep >= 0)
     {
-      tempGradePointsSum += (hours[courseNumber] * tempGradePointRep);
-      tempCreditHoursSum += hours[courseNumber];
+      tempGradePointsSum += (tempHours * tempGradePointRep);
+      tempCreditHoursSum += tempHours;
     }
   }
 
@@ -198,33 +261,41 @@ double gpa(int n, const char grades[], const int hours[])
     cout << "An error occured" << endl;
 }
 
-double semesterGpa(int n, const string times[], const char grades[], const int hours[], string semester)
+double semesterGpa(int n, const Course courseClasses[], string semester)
 {
   double tempGradePointsSum = 0;
   double tempCreditHoursSum = 0;
   double tempGradePointRep = -1;
 
-  for(int courseNumber = 0; courseNumber < n; courseNumber++)
+  string tempTime;
+  char tempGrade;
+  int tempHours;
+
+  for(int z = 0; z < n; z++)
   {
-    if(times[courseNumber] == semester)
+    courseClasses[z].getTime(tempTime);
+    courseClasses[z].getGrade(tempGrade);
+    courseClasses[z].getHours(tempHours);
+
+    if(tempTime == semester)
     {
-      if(grades[courseNumber] == 'A')
+      if(tempGrade == 'A')
       {
         tempGradePointRep = 4;
       }
-      else if(grades[courseNumber] == 'B')
+      else if(tempGrade == 'B')
       {
         tempGradePointRep = 3;
       }
-      else if(grades[courseNumber] == 'C')
+      else if(tempGrade == 'C')
       {
         tempGradePointRep = 2;
       }
-      else if(grades[courseNumber] == 'D')
+      else if(tempGrade == 'D')
       {
         tempGradePointRep = 1;
       }
-      else if(grades[courseNumber] == 'F')
+      else if(tempGrade == 'F')
       {
         tempGradePointRep = 0;
       }
@@ -235,8 +306,8 @@ double semesterGpa(int n, const string times[], const char grades[], const int h
 
       if(tempGradePointRep >= 0)
       {
-        tempGradePointsSum += (hours[courseNumber] * tempGradePointRep);
-        tempCreditHoursSum += hours[courseNumber];
+        tempGradePointsSum += (tempHours * tempGradePointRep);
+        tempCreditHoursSum += tempHours;
       }
     }
   }
@@ -247,22 +318,28 @@ double semesterGpa(int n, const string times[], const char grades[], const int h
     cout << "An error occured" << endl;
 }
 
-int DRule(int n, char grades[], int hours[])
+int DRule(int n, Course courseClasses[])
 {
+  char tempGrade;
+  int tempHours;
+
   int calculation = 0;
 
   for(int z = 0;z < n;z++)
   {
-    if(grades[z] == 'D')
+    courseClasses[z].getGrade(tempGrade);
+    courseClasses[z].getHours(tempHours);
+
+    if(tempGrade == 'D')
     {
-      calculation += hours[z];
+      calculation += tempHours;
     }
   }
 
   return calculation;
 }
 
-void print(int n, string names[], string times[], string numbers[], char grades[], int hours[])
+void print(int n, Course courseClasses[])
 {
   cout << endl;
 
@@ -278,48 +355,66 @@ void print(int n, string names[], string times[], string numbers[], char grades[
   cout << left << setw(w) << setfill(s) << "Hour";
   cout << endl << endl;
 
+  string tempName;
+  string tempTime;
+  string tempNumber;
+  char tempGrade;
+  int tempHours;
+
   //lists all courses
   for(int z = 0;z<n;z++)
   {
-    cout << left << setw(w) << setfill(s) << names[z];
-    cout << left << setw(w) << setfill(s) << times[z];
-    cout << left << setw(w) << setfill(s) << numbers[z];
-    cout << left << setw(w) << setfill(s) << grades[z];
-    cout << left << setw(w) << setfill(s) << hours[z];
+    courseClasses[z].getName(tempName);
+    courseClasses[z].getTime(tempTime);
+    courseClasses[z].getNumber(tempNumber);
+    courseClasses[z].getGrade(tempGrade);
+    courseClasses[z].getHours(tempHours);
+
+    cout << left << setw(w) << setfill(s) << tempName;
+    cout << left << setw(w) << setfill(s) << tempTime;
+    cout << left << setw(w) << setfill(s) << tempNumber;
+    cout << left << setw(w) << setfill(s) << tempGrade;
+    cout << left << setw(w) << setfill(s) << tempHours;
     cout << endl;
   }
 
   cout << endl;
 }
 
-void getCourse(string& name, string& time, string& number, char& grade, int& hours, int n, Course courseClass)
+void getCourse(int n, Course courseClass)
 {
+  string tempName;
+  string tempTime;
+  string tempNumber;
+  char tempGrade;
+  int tempHours;
+
   //name
   cout << "Enter the course name (e.g. Programming Foundations I) for class number " << n << endl;
-  getline(cin,name);
+  getline(cin,tempName);
 
-  while(name == "")
+  while(tempName == "")
   {
     cout << "Invalid input. Please try again." << endl;
-    getline(cin,name);
+    getline(cin,tempName);
   }
   //time
   cout << "Enter the semester (e.g. Spring 2016) for class number " << n << endl;
-  getline(cin,time);
+  getline(cin,tempTime);
 
   while(time == "")
   {
     cout << "Invalid input. Please try again." << endl;
-    getline(cin,time);
+    getline(cin,tempTime);
   }
   //number
   cout << "Enter the course number (e.g. CSCE 2004) for class number " << n << endl;
-  getline(cin,number);
+  getline(cin,tempNumber);
 
-  while(number == "")
+  while(tempNumber == "")
   {
     cout << "Invalid input. Please try again." << endl;
-    getline(cin,number);
+    getline(cin,tempNumber);
   }
   //grade
   string tempString = "";
@@ -330,31 +425,31 @@ void getCourse(string& name, string& time, string& number, char& grade, int& hou
 
     if(tempString == "A" || tempString == "a")
     {
-      grade = 'A';
+      tempGrade = 'A';
     }
     else if(tempString == "B" || tempString == "b")
     {
-      grade = 'B';
+      tempGrade = 'B';
     }
     else if(tempString == "C" || tempString == "c")
     {
-      grade = 'C';
+      tempGrade = 'C';
     }
     else if(tempString == "D" || tempString == "d")
     {
-      grade = 'D';
+      tempGrade = 'D';
     }
     else if(tempString == "F" || tempString == "f")
     {
-      grade = 'F';
+      tempGrade = 'F';
     }
     else if(tempString == "W" || tempString == "w")
     {
-      grade = 'W';
+      tempGrade = 'W';
     }
     else if(tempString == "I" || tempString == "i")
     {
-      grade = 'I';
+      tempGrade = 'I';
     }
     else
     {
@@ -364,18 +459,22 @@ void getCourse(string& name, string& time, string& number, char& grade, int& hou
   }
   //number
   cout << "Enter the course hours (1 ... 5) for class number " << n << endl;
-  cin >> hours;
+  cin >> tempHours;
 
-  while(hours < 1 && hours > 5)
+  while(tempHours < 1 && tempHours > 5)
   {
     cout << "Invalid user input, please try again." << endl;
     cout << "Enter the course hours (1 ... 5) for class number " << n << endl;
-    cin >> hours;
+    cin >> tempHours;
   }
 
   cin.ignore();
 
-  courseClass.set(name, time, number, grade, hours);
+  courseClass.setName(tempName);
+  courseClass.setTime(tempTime);
+  courseClass.setNumber(tempNumber);
+  courseClass.setGrade(tempGrade);
+  courseClass.setHours(tempHours);
 }
 
 char menu()
@@ -444,12 +543,6 @@ int main ()
   //init all vars
   //initalizes all array vars based on defined validated input above
   Course courseClasses[COURSE_MAX];
-  string courseNames[COURSE_MAX];
-  string semesters[COURSE_MAX];
-  string courseNumbers[COURSE_MAX];
-  //stores as numerical equiv of letter grade for easier calculation
-  char courseGrades[COURSE_MAX] = {0};
-  int courseHours[COURSE_MAX] = {0};
 
   cout << "Welcome to PFI course management system v1" << endl;
   cout << "Would you like to read the courses taken from a file?" << endl;
@@ -482,7 +575,7 @@ int main ()
 
     if(mode == "y")
     {
-      reading("courses.txt", courseNames, semesters, courseNumbers, courseGrades, courseHours, courses, COURSE_MAX, courseClasses);
+      reading("courses.txt", courses, COURSE_MAX, courseClasses);
     }
     else
     {
@@ -495,7 +588,7 @@ int main ()
         getline(cin, selectedFilename);
       }
 
-      reading(selectedFilename.c_str(), courseNames, semesters, courseNumbers, courseGrades, courseHours, courses, COURSE_MAX, courseClasses);
+      reading(selectedFilename.c_str(), courses, COURSE_MAX, courseClasses);
     }
   }
 
@@ -516,7 +609,7 @@ int main ()
     for(int step = 0;step < courses;step++)
     {
       //comeback
-      getCourse(courseNames[step], semesters[step], courseNumbers[step], courseGrades[step], courseHours[step], courses, courseClasses[step]);
+      getCourse(courses, courseClasses[step]);
     }
   }
 
@@ -528,15 +621,15 @@ int main ()
 
     if(menuSelector == 'A')
     {
-      cout << "Congratulations, your GPA was " << gpa(courses, courseGrades, courseHours) << endl;
+      cout << "Congratulations, your GPA was " << gpa(courseClasses) << endl;
     }
     else if(menuSelector == 'B')
     {
-      print(courses, courseNames, semesters, courseNumbers, courseGrades, courseHours);
+      print(courses, courseClasses);
     }
     else if(menuSelector == 'C')
     {
-      cout << "Total hours with D grades are " << DRule(courses, courseGrades, courseHours) << endl;
+      cout << "Total hours with D grades are " << DRule(courses, courseClasses) << endl;
     }
     else if(menuSelector == 'D')
     {
@@ -548,11 +641,16 @@ int main ()
       getline(cin,selectedSemester);
 
       double tempClasses = 0;
+
+      string tempTime;
+
       while(tempClasses == 0)
       {
         for(int z = 0; z<courses;z++)
         {
-          if(semesters[z] == selectedSemester)
+          courseClasses[z].getTime(tempTime);
+
+          if(tempTime == selectedSemester)
           {
             tempClasses++;
           }
@@ -565,7 +663,7 @@ int main ()
         }
       }
 
-      cout << "Congratulations, your GPA was " << semesterGpa(courses, semesters, courseGrades, courseHours, selectedSemester) << " in " << selectedSemester << endl;
+      cout << "Congratulations, your GPA was " << semesterGpa(courses, courseClasses, selectedSemester) << " in " << selectedSemester << endl;
     }
     else if(menuSelector == 'E')
     {
@@ -573,7 +671,7 @@ int main ()
       {
         courses++;
 
-        getCourse(courseNames[courses - 1], semesters[courses - 1], courseNumbers[courses - 1], courseGrades[courses - 1], courseHours[courses - 1], courses, courseClasses[courses - 1]);
+        getCourse(courses, courseClasses[courses - 1]);
       }
       else
       {
@@ -596,20 +694,31 @@ int main ()
           cin.ignore();
         }
 
+        string tempName;
+        string tempTime;
+        string tempNumber;
+        char tempGrade;
+        int tempHours;
+
         //move elemnts left 1
         for(int z = selection;z < courses;z++)
         {
-          courseNames[z - 1] = courseNames[z];
-          semesters[z - 1] = semesters[z];
-          courseNumbers[z - 1] = courseNumbers[z];
-          courseGrades[z - 1] = courseGrades[z];
-          courseHours[z - 1] = courseHours[z];
-
-          courseClasses[z - 1].set(courseNames[z], semesters[z], courseNumbers[z], courseGrades[z], courseHours[z]);
+          //name
+          courseClasses[z].getName(tempName);
+          courseClasses[z - 1].setName(tempName);
+          //time
+          courseClasses[z].getTime(tempTime);
+          courseClasses[z - 1].setTime(tempTime);
+          //number
+          courseClasses[z].getNumber(tempNumber);
+          courseClasses[z - 1].setNumber(tempNumber);
+          //grade
+          courseClasses[z].getGrade(tempGrade);
+          courseClasses[z - 1].setGrade(tempGrade);
+          //hours
+          courseClasses[z].getHours(tempHours);
+          courseClasses[z - 1].setHours(tempHours);
         }
-
-        //with this method, all ___[courses] still exist,
-        //but will be overwriten as a result
 
         courses--;
       }
@@ -622,11 +731,11 @@ int main ()
     {
       if(selectedFilename == "")
       {
-        writing("courses.txt", courseNames, semesters, courseNumbers, courseGrades, courseHours, courses);
+        writing("courses.txt", courseClasses, courses);
       }
       else
       {
-        writing(selectedFilename.c_str(), courseNames, semesters, courseNumbers, courseGrades, courseHours, courses);
+        writing(selectedFilename.c_str(), courseClasses, courses);
       }
       //"escapes all logic"
       return 0;
