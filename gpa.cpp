@@ -809,6 +809,7 @@ int main ()
     }
     else if(menuSelector == 'G')
     {
+      /*
       ifstream file;
       file.open(filename);
 
@@ -858,6 +859,7 @@ int main ()
       }
 
       file.close();
+      */
 
       //logic
         //get file
