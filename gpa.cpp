@@ -183,7 +183,7 @@ void Req::setHourSum(int hourSum)
 {
   this->hourSum = hourSum;
 }
-void Req::setCourses(Course courses[REQ_COURSE_MAX]);
+void Req::setCourses(Course courses[REQ_COURSE_MAX])
 {
   this->courses = courses;
 }
