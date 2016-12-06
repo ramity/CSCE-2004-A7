@@ -137,7 +137,7 @@ class Req
     string group;
     string subGroup;
     int hourSum;
-    Course courses[REQ_COURSE_MAX];
+    Course courses[];
     bool status;
 };
 
@@ -146,6 +146,7 @@ Req::Req()
   group = "University Core";
   subGroup = "Default";
   hourSum = 0;
+  courses[REQ_COURSE_MAX];
   status = false;
 }
 //get
@@ -157,7 +158,7 @@ void Req::getSubGroup(string& subGroup)
 {
   subGroup = this->subGroup;
 }
-void Req::getHoursum(int& hourSum)
+void Req::getHourSum(int& hourSum)
 {
   hourSum = this->hourSum;
 }
