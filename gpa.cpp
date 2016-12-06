@@ -10,81 +10,6 @@ using namespace std;
 int const COURSE_MAX = 100;
 int const REQ_COURSE_MAX = 100;
 
-class Req
-{
-  public:
-    Req();
-
-    void getGroup(string& group);
-    void getSubGroup(string& subGroup);
-    void getHourSum(int& hourSum);
-    void getCourses(Course& courses[]);
-    void getStatus(bool& status);
-
-    void setGroup(string group);
-    void setSubGroup(string subGroup);
-    void setHourSum(int hourSum);
-    void setCourses(Course courses[]);
-    void setStatus(bool status);
-
-  private:
-    string group;
-    string subGroup;
-    int hourSum;
-    Course courses[REQ_COURSE_MAX];
-    bool status;
-};
-
-Req::Req()
-{
-  group = "University Core";
-  subGroup = "Default";
-  hourSum = 0;
-  status = false;
-}
-//get
-Req::getGroup(string& group)
-{
-  group = this->group;
-}
-Req::getSubGroup(string& subGroup)
-{
-  subGroup = this->subGroup;
-}
-Req::getHoursum(int& hourSum)
-{
-  hourSum = this->hourSum;
-}
-Req::getCourses(Course& courses[])
-{
-  courses = this->courses;
-}
-Req::getStatus(bool& status)
-{
-  status = this->status;
-}
-//set
-Req::setGroup(string group)
-{
-  this->group = group;
-}
-Req::setSubGroup(string subGroup)
-{
-  this->subGroup = subGroup;
-}
-Req::setHoursum(int hourSum)
-{
-  this->hourSum = hourSum;
-}
-Req::setCourses(Course courses[])
-{
-  this->courses = courses;
-}
-Req::setStatus(bool status)
-{
-  this->status = status;
-}
-
 class Course
 {
   public:
@@ -189,6 +114,81 @@ void Course::print() const
   cout << left << setw(w) << setfill(s) << this->hours;
   cout << left << setw(w) << setfill(s) << this->availability;
   cout << endl;
+}
+
+class Req
+{
+  public:
+    Req();
+
+    void getGroup(string& group);
+    void getSubGroup(string& subGroup);
+    void getHourSum(int& hourSum);
+    void getCourses(Course& courses[]);
+    void getStatus(bool& status);
+
+    void setGroup(string group);
+    void setSubGroup(string subGroup);
+    void setHourSum(int hourSum);
+    void setCourses(Course courses[]);
+    void setStatus(bool status);
+
+  private:
+    string group;
+    string subGroup;
+    int hourSum;
+    Course courses[REQ_COURSE_MAX];
+    bool status;
+};
+
+Req::Req()
+{
+  group = "University Core";
+  subGroup = "Default";
+  hourSum = 0;
+  status = false;
+}
+//get
+Req::getGroup(string& group)
+{
+  group = this->group;
+}
+Req::getSubGroup(string& subGroup)
+{
+  subGroup = this->subGroup;
+}
+Req::getHoursum(int& hourSum)
+{
+  hourSum = this->hourSum;
+}
+Req::getCourses(Course& courses[])
+{
+  courses = this->courses;
+}
+Req::getStatus(bool& status)
+{
+  status = this->status;
+}
+//set
+Req::setGroup(string group)
+{
+  this->group = group;
+}
+Req::setSubGroup(string subGroup)
+{
+  this->subGroup = subGroup;
+}
+Req::setHoursum(int hourSum)
+{
+  this->hourSum = hourSum;
+}
+Req::setCourses(Course courses[])
+{
+  this->courses = courses;
+}
+Req::setStatus(bool status)
+{
+  this->status = status;
 }
 
 bool reading(const char filename[], int& n, int capacity, Course courseClasses[])
