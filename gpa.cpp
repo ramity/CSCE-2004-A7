@@ -7,7 +7,83 @@
 
 using namespace std;
 
-int const COURSE_MAX = 10;
+int const COURSE_MAX = 100;
+int const REQ_COURSE_MAX = 100;
+
+class Req
+{
+  public:
+    Req();
+
+    void getGroup(string& group);
+    void getSubGroup(string& subGroup);
+    void getHourSum(int& hourSum);
+    void getCourses(Course& courses[]);
+    void getStatus(bool& status);
+
+    void setGroup(string group);
+    void setSubGroup(string subGroup);
+    void setHourSum(int hourSum);
+    void setCourses(Course courses[]);
+    void setStatus(bool status);
+
+  private:
+    string group;
+    string subGroup;
+    int hourSum;
+    Course courses[REQ_COURSE_MAX];
+    bool status;
+};
+
+Req::Req()
+{
+  group = "University Core";
+  subGroup = "Default";
+  hourSum = 0;
+  status = false;
+}
+//get
+Req::getGroup(string& group)
+{
+  group = this->group;
+}
+Req::getSubGroup(string& subGroup)
+{
+  subGroup = this->subGroup;
+}
+Req::getHoursum(int& hourSum)
+{
+  hourSum = this->hourSum;
+}
+Req::getCourses(Course& courses[])
+{
+  courses = this->courses;
+}
+Req::getStatus(bool& status)
+{
+  status = this->status;
+}
+//set
+Req::setGroup(string group)
+{
+  this->group = group;
+}
+Req::setSubGroup(string subGroup)
+{
+  this->subGroup = subGroup;
+}
+Req::setHoursum(int hourSum)
+{
+  this->hourSum = hourSum;
+}
+Req::setCourses(Course courses[])
+{
+  this->courses = courses;
+}
+Req::setStatus(bool status)
+{
+  this->status = status;
+}
 
 class Course
 {
@@ -19,12 +95,14 @@ class Course
     void getNumber(string& number);
     void getGrade(char& grade);
     void getHours(int& hour);
+    void getAvailability(bool& availability);
 
     void setName(string name);
     void setTime(string time);
     void setNumber(string number);
     void setGrade(char grade);
     void setHours(int hour);
+    void setAvailability(bool availability);
 
     void print() const;
 
@@ -34,7 +112,7 @@ class Course
     string courseNumber;
     char grade;
     int hours;
-
+    bool availability;
 };
 
 Course::Course()
@@ -44,6 +122,7 @@ Course::Course()
   courseNumber = "CSCE 2004";
   grade = 'A';
   hours = 4;
+  availability = true;
 }
 
 //GET METHODS
@@ -67,6 +146,10 @@ void Course::getHours(int& hour)
 {
   hour = this->hours;
 }
+void Course::getAvailability(bool& availability)
+{
+  availability = this->availability;
+}
 
 //SET METHODS
 void Course::setName(string name)
@@ -89,6 +172,10 @@ void Course::setHours(int hours)
 {
   this->hours = hours;
 }
+void Course::setAvailability(bool availability)
+{
+  this->availability = availability;
+}
 
 void Course::print() const
 {
@@ -100,12 +187,13 @@ void Course::print() const
   cout << left << setw(w) << setfill(s) << this->courseNumber;
   cout << left << setw(w) << setfill(s) << this->grade;
   cout << left << setw(w) << setfill(s) << this->hours;
+  cout << left << setw(w) << setfill(s) << this->availability;
   cout << endl;
 }
 
 bool reading(const char filename[], int& n, int capacity, Course courseClasses[])
 {
-  fstream file;
+  ifstream file;
   file.open(filename);
 
   if(file.fail())
@@ -155,19 +243,11 @@ bool reading(const char filename[], int& n, int capacity, Course courseClasses[]
 
   file.close();
 
-  return 1;
+  return true;
 }
 
 bool writing(const char filename[], Course courseClasses[], int n)
 {
-  //nuke the file
-  if(remove(filename) != 0)
-  {
-    cout << "Failed to psudo clear file named: " << filename << endl;
-    exit(EXIT_FAILURE);
-  }
-
-  //recreate the file
   ofstream file;
   file.open(filename);
 
@@ -206,7 +286,7 @@ bool writing(const char filename[], Course courseClasses[], int n)
 
   file.close();
 
-  return 1;
+  return true;
 }
 
 double gpa(int n, Course courseClasses[])
@@ -726,6 +806,77 @@ int main ()
       {
         cout << "There are not any courses to remove" << endl;
       }
+    }
+    else if(menuSelector == 'G')
+    {
+      ifstream file;
+      file.open(filename);
+
+      if(file.fail())
+      {
+        cout << "Failed to open file named: " << filename << endl;
+        cout << "Error in reading the deafult file. Terminating..." << endl;
+        exit(EXIT_FAILURE);
+      }
+
+      if(file.is_open())
+      {
+        //gets first line
+        file >> n;
+        file.ignore();
+
+        if(n < capacity)
+        {
+          string tempName;
+          string tempTime;
+          string tempNumber;
+          char tempGrade;
+          int tempHours;
+
+          for(int z = 0;z < n;z++)
+          {
+            cout << "Reading class " << z + 1 << endl;
+            getline(file,tempName);
+            getline(file,tempTime);
+            getline(file,tempNumber);
+            file >> tempGrade;
+            file >> tempHours;
+            file.ignore();
+
+            //class
+            courseClasses[z].setName(tempName);
+            courseClasses[z].setTime(tempTime);
+            courseClasses[z].setNumber(tempNumber);
+            courseClasses[z].setGrade(tempGrade);
+            courseClasses[z].setHours(tempHours);
+          }
+        }
+        else
+        {
+          cout << "specified size on text file: " << filename << " is too large" << endl;
+        }
+      }
+
+      file.close();
+
+      //logic
+        //get file
+        //create array of req obj
+        //req obj =
+          //group
+          //subgroup
+          //credit sum
+          //class list array
+        //iterate through all classes and check if all classes
+        //in class list array AND/OR totaling to the credit sum.
+        //and if the course has availability = true, then:
+          //set availability of course = false; set status of req obj = true;(passed)
+
+      //on empty line, iterate new loop and repeat logic above
+
+      //user interface
+        //print group
+          //print all subgroups with goup above with status (true/false)
     }
     else if(menuSelector == 'Q')
     {
