@@ -149,44 +149,44 @@ Req::Req()
   status = false;
 }
 //get
-Req::getGroup(string& group)
+void Req::getGroup(string& group)
 {
   group = this->group;
 }
-Req::getSubGroup(string& subGroup)
+void Req::getSubGroup(string& subGroup)
 {
   subGroup = this->subGroup;
 }
-Req::getHoursum(int& hourSum)
+void Req::getHoursum(int& hourSum)
 {
   hourSum = this->hourSum;
 }
-Req::getCourses(Course& courses[])
+void Req::getCourses(Course& courses[])
 {
   courses = this->courses;
 }
-Req::getStatus(bool& status)
+void Req::getStatus(bool& status)
 {
   status = this->status;
 }
 //set
-Req::setGroup(string group)
+void Req::setGroup(string group)
 {
   this->group = group;
 }
-Req::setSubGroup(string subGroup)
+void Req::setSubGroup(string subGroup)
 {
   this->subGroup = subGroup;
 }
-Req::setHoursum(int hourSum)
+void Req::setHoursum(int hourSum)
 {
   this->hourSum = hourSum;
 }
-Req::setCourses(Course courses[])
+void Req::setCourses(Course courses[])
 {
   this->courses = courses;
 }
-Req::setStatus(bool status)
+void Req::setStatus(bool status)
 {
   this->status = status;
 }
