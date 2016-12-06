@@ -137,7 +137,7 @@ class Req
     string group;
     string subGroup;
     int hourSum;
-    Course courses[];
+    Course courses[REQ_COURSE_MAX];
     bool status;
 };
 
@@ -162,7 +162,7 @@ void Req::getHourSum(int& hourSum)
 {
   hourSum = this->hourSum;
 }
-void Req::getCourses(Course& courses[])
+void Req::getCourses(Course courses[])
 {
   courses = this->courses;
 }
@@ -179,7 +179,7 @@ void Req::setSubGroup(string subGroup)
 {
   this->subGroup = subGroup;
 }
-void Req::setHoursum(int hourSum)
+void Req::setHourSum(int hourSum)
 {
   this->hourSum = hourSum;
 }
