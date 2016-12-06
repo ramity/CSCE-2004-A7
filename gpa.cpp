@@ -124,7 +124,7 @@ class Req
     void getGroup(string& group);
     void getSubGroup(string& subGroup);
     void getHourSum(int& hourSum);
-    void getCourses(Course& courses[]);
+    void getCourses(Course courses[]);
     void getStatus(bool& status);
 
     void setGroup(string group);
