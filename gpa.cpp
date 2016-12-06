@@ -164,7 +164,7 @@ void Req::getHourSum(int& hourSum)
 }
 void Req::getCourses(Course courses[])
 {
-  courses = this->courses;
+  courses[] = this->courses;
 }
 void Req::getStatus(bool& status)
 {
@@ -183,7 +183,7 @@ void Req::setHourSum(int hourSum)
 {
   this->hourSum = hourSum;
 }
-void Req::setCourses(Course courses[])
+void Req::setCourses(Course courses[REQ_COURSE_MAX])
 {
   this->courses = courses;
 }
