@@ -7,8 +7,9 @@
 
 using namespace std;
 
-int const COURSE_MAX = 100;
-int const REQ_COURSE_MAX = 100;
+int const REQ_MAX = 50;
+int const COURSE_MAX = 50;
+int const REQ_COURSE_MAX = 50;
 
 class Course
 {
@@ -21,6 +22,13 @@ class Course
     void getGrade(char& grade);
     void getHours(int& hour);
     void getAvailability(bool& availability);
+
+    string getName();
+    string getTime();
+    string getNumber();
+    char getGrade();
+    int getHours();
+    bool getAvailability();
 
     void setName(string name);
     void setTime(string time);
@@ -42,7 +50,7 @@ class Course
 
 Course::Course()
 {
-  courseName = "Programming foundations I";
+  courseName = "END";
   courseTime = "Fall 2015";
   courseNumber = "CSCE 2004";
   grade = 'A';
@@ -74,6 +82,32 @@ void Course::getHours(int& hour)
 void Course::getAvailability(bool& availability)
 {
   availability = this->availability;
+}
+
+//GET RETURN METHODS
+string Course::getName()
+{
+  return this->courseName;
+}
+string Course::getTime()
+{
+  return this->courseTime;
+}
+string Course::getNumber()
+{
+  return this->courseNumber;
+}
+char Course::getGrade()
+{
+  return this->grade;
+}
+int Course::getHours()
+{
+  return this->hours;
+}
+bool Course::getAvailability()
+{
+  return this->availability;
 }
 
 //SET METHODS
@@ -127,6 +161,12 @@ class Req
     void getCourses(Course courses[]);
     void getStatus(bool& status);
 
+    string getGroup();
+    string getSubGroup();
+    int getHourSum();
+    Course getCourses();
+    bool getStatus();
+
     void setGroup(string group);
     void setSubGroup(string subGroup);
     void setHourSum(int hourSum);
@@ -137,17 +177,17 @@ class Req
     string group;
     string subGroup;
     int hourSum;
-    Course courses[];
+    Course courses[REQ_COURSE_MAX];
     bool status;
 };
 
 Req::Req()
 {
-  group = "University Core";
-  subGroup = "Default";
+  group = "END";
+  subGroup = "END";
   hourSum = 0;
   courses[REQ_COURSE_MAX];
-  status = false;
+  status = false;//fail until proven otherwise
 }
 //get
 void Req::getGroup(string& group)
@@ -164,11 +204,40 @@ void Req::getHourSum(int& hourSum)
 }
 void Req::getCourses(Course courses[])
 {
-  courses = this->courses;
+  for(int z = 0;z < REQ_COURSE_MAX;z++)
+  {
+    courses[z].setName(this->courses[z].getName());
+    courses[z].setTime(this->courses[z].getTime());
+    courses[z].setNumber(this->courses[z].getNumber());
+    courses[z].setGrade(this->courses[z].getGrade());
+    courses[z].setHours(this->courses[z].getHours());
+    courses[z].setAvailability(this->courses[z].getAvailability());
+  }
 }
 void Req::getStatus(bool& status)
 {
   status = this->status;
+}
+//get return
+string Req::getGroup()
+{
+  return this->group;
+}
+string Req::getSubGroup()
+{
+  return this->subGroup;
+}
+int Req::getHourSum()
+{
+  return this->hourSum;
+}
+Course Req::getCourses()
+{
+  return this->courses[REQ_COURSE_MAX];
+}
+bool Req::getStatus()
+{
+  return this->status;
 }
 //set
 void Req::setGroup(string group)
@@ -185,7 +254,9 @@ void Req::setHourSum(int hourSum)
 }
 void Req::setCourses(Course courses[])
 {
-  this->courses* = courses;
+  for(int z = 0;z < REQ_COURSE_MAX;z++) {
+    this->courses[z] = courses[z];
+  }
 }
 void Req::setStatus(bool status)
 {
@@ -573,6 +644,7 @@ char menu()
     cout << "D(d) . Compute the GPA for a particular semester" << endl;
     cout << "E(e) . Add another course to the course list" << endl;
     cout << "F(f) . Delete a course from the course list" << endl;
+    cout << "G(g) . Check current classes against University Core degree audit" << endl;
     cout << "Q(q) . Quit the program" << endl;
     cout << "Please choose one of the above" << endl;
 
@@ -602,6 +674,10 @@ char menu()
     {
       return 'F';
     }
+    else if(tempString == "G" || tempString == "g")
+    {
+      return 'G';
+    }
     else if(tempString == "Q" || tempString == "q")
     {
       return 'Q';
@@ -623,6 +699,7 @@ int main ()
 
   //init all vars
   //initalizes all array vars based on defined validated input above
+  Req reqClasses[REQ_MAX];
   Course courseClasses[COURSE_MAX];
 
   cout << "Welcome to PFI course management system v1" << endl;
@@ -810,76 +887,193 @@ int main ()
     }
     else if(menuSelector == 'G')
     {
-      /*
+      //checks number of
+      int empty = 0;
       ifstream file;
-      file.open(filename);
-
+      string filename = "CSCErequirements.txt";
+      file.open(filename.c_str());
       if(file.fail())
       {
-        cout << "Failed to open file named: " << filename << endl;
+        cout << "Failed to open file named: CSCErequirements" << endl;
         cout << "Error in reading the deafult file. Terminating..." << endl;
         exit(EXIT_FAILURE);
       }
-
       if(file.is_open())
       {
-        //gets first line
-        file >> n;
-        file.ignore();
-
-        if(n < capacity)
+        //checks if number of reqs is too large for REQ_MAX
+        string line;
+        while(getline(file, line))
         {
-          string tempName;
-          string tempTime;
-          string tempNumber;
-          char tempGrade;
-          int tempHours;
-
-          for(int z = 0;z < n;z++)
+          if(line.empty())
           {
-            cout << "Reading class " << z + 1 << endl;
-            getline(file,tempName);
-            getline(file,tempTime);
-            getline(file,tempNumber);
-            file >> tempGrade;
-            file >> tempHours;
-            file.ignore();
+            empty++;
+          }
+        }
 
-            //class
-            courseClasses[z].setName(tempName);
-            courseClasses[z].setTime(tempTime);
-            courseClasses[z].setNumber(tempNumber);
-            courseClasses[z].setGrade(tempGrade);
-            courseClasses[z].setHours(tempHours);
+        if(empty < REQ_MAX)
+        {
+          //go back to first line
+          file.clear();
+          file.seekg(0, ios::beg);
+
+          //placeholders for later use
+          int tempInt;
+          string tempString;
+
+          //begin logic for
+          int obj = -1;
+          while(getline(file, line))
+          {
+            if(!line.empty())
+            {
+              obj++;
+              reqClasses[obj].setGroup(line);
+
+              getline(file,tempString);
+
+              reqClasses[obj].setSubGroup(tempString);
+
+              file >> tempInt;
+              file.ignore();
+              reqClasses[obj].setHourSum(tempInt);
+
+              int reqCourseCount = 0;
+              bool escape = false;
+              Course reqCourseClasses[REQ_COURSE_MAX];
+              while(!escape)
+              {
+                getline(file,tempString);
+
+                if(tempString.empty())
+                {
+                  escape = true;
+                }
+                else
+                {
+                  cout << "overwriting req obj for " << line << "[" << tempString << "]" << endl;
+                  //overwrite constructor
+                  reqCourseClasses[reqCourseCount].setName("REQ");
+                  reqCourseClasses[reqCourseCount].setTime("REQ");
+
+                  //set number
+                  reqCourseClasses[reqCourseCount].setNumber(tempString);
+
+                  //set hours
+                  file >> tempInt;
+                  file.ignore();
+                  reqCourseClasses[reqCourseCount].setHours(tempInt);
+
+                  reqCourseCount++;
+                }
+              }
+              reqClasses[obj].setCourses(reqCourseClasses);
+            }
+          }
+
+          cout << obj << " requirement objects generated" << endl;
+
+          //iterate through all reqs for comparision against courseClasses
+          for(int r = 0;r < obj;r++)
+          {
+            Course targetRC[COURSE_MAX];
+
+            //gets courses into a targetRequirementClasses var
+            reqClasses[r].getCourses(targetRC);
+
+            //iterate through all req[r]courses
+            int reqCourseCount = 0;
+            //holds temp int for hours calculation
+            int reqCourseHours = 0;
+            //holds escape logic
+            string targetRCname = "START";
+
+            while(targetRCname != "END")
+            {
+              //get name from courses
+              targetRCname = targetRC[reqCourseCount].getName();
+
+              if(reqCourseHours >= reqClasses[r].getHourSum())
+              {
+                cout << "Passing with " << reqCourseHours << " out of " << reqClasses[r].getHourSum() << endl;
+
+                //req has been met
+                reqClasses[r].setStatus(true);
+
+                //force while to end
+                targetRCname = "END";
+              }
+              else
+              {
+                if(targetRCname == "END")
+                {
+                  break;
+                }
+
+                cout << "REQCOURSE id :" << reqCourseCount << endl;
+
+                cout << "LOOKING FOR: " << targetRC[reqCourseCount].getNumber() << endl;
+
+                //iterate through all courses
+                for(int c = 0;c < courses;c++)
+                {
+                  //check if reqCourseHours has been met
+                  if(courseClasses[c].getAvailability())
+                  {
+                    //compare couresNumbers
+                    if(targetRC[reqCourseCount].getNumber() == courseClasses[c].getNumber())
+                    {
+                      //store grade in temp var
+                      char tempGrade = courseClasses[c].getGrade();
+
+                      //check if passed class
+                      if(tempGrade != 'F' || tempGrade != 'W' || tempGrade != 'I')
+                      {
+                        //add credits into tempHolder
+                        reqCourseHours += courseClasses[c].getHours();
+
+                        cout << "Setting " << courseClasses[c].getNumber() << " status to false" << endl;
+
+                        //setAvailability false
+                        courseClasses[c].setAvailability(false);
+                      }
+                      else
+                      {
+                        //NOTE
+                        //this application assumes that the end user could have
+                        //taken a particular class mutliple time, therefore
+                        //does not set the status of a requirement to failed
+                        //as the user may have duplicate classes in the
+                        //courseClasses array. The following commented
+                        //logic is for IF IT DID.
+
+                        //setStatus of req to false (failed)
+                        //reqClasses[r].setStatus(false);
+                        //force while to end
+                        //targetRCname = "END";
+                      }
+                    }
+                  }
+                }
+              }
+              reqCourseCount++;
+            }
+          }
+
+          //lastly output results
+          for(int r = 0;r < obj;r++)
+          {
+            if(reqClasses[r].getStatus())
+              cout << "PASS: " << reqClasses[r].getGroup() << "[" << reqClasses[r].getSubGroup() << "]" << endl;
+            else
+              cout << "FAIL: " << reqClasses[r].getGroup() << "[" << reqClasses[r].getSubGroup() << "]" << endl;
           }
         }
         else
         {
-          cout << "specified size on text file: " << filename << " is too large" << endl;
+          cout << "Too many requirement objects listed in CSCErequirements.txt file" << endl;
         }
       }
-
       file.close();
-      */
-
-      //logic
-        //get file
-        //create array of req obj
-        //req obj =
-          //group
-          //subgroup
-          //credit sum
-          //class list array
-        //iterate through all classes and check if all classes
-        //in class list array AND/OR totaling to the credit sum.
-        //and if the course has availability = true, then:
-          //set availability of course = false; set status of req obj = true;(passed)
-
-      //on empty line, iterate new loop and repeat logic above
-
-      //user interface
-        //print group
-          //print all subgroups with goup above with status (true/false)
     }
     else if(menuSelector == 'Q')
     {

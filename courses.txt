@@ -1,4 +1,4 @@
-7
+9
 Programming Foundations I
 Fall 2015
 CSCE 2004
@@ -32,5 +32,15 @@ A
 Composition I
 Spring 2015
 ENGL 1013
+A
+3
+Composition II
+Fall 2015
+ENGL 1023
+A
+3
+Landscape Architecture
+Fall 2015
+LARC 1003
 A
 3
